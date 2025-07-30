@@ -57,7 +57,7 @@ jobs:
       run: |
         echo "Installing Android SDK and build tools..."
         
-        # Create Android SDK directory
+        # Create Android SDK directory in the expected buildozer location
         mkdir -p ~/.buildozer/android/platform/android-sdk
         
         # Download and install Android SDK command line tools
@@ -81,6 +81,11 @@ jobs:
           "build-tools;33.0.0" \
           "ndk;25.2.9519653"
         
+        # Verify build tools installation
+        echo "Verifying build tools installation..."
+        ls -la ~/.buildozer/android/platform/android-sdk/build-tools/
+        ls -la ~/.buildozer/android/platform/android-sdk/build-tools/33.0.0/
+        
         echo "Android SDK and build tools installed successfully!"
         
     - name: Install Buildozer
@@ -91,7 +96,7 @@ jobs:
       run: |
         # Set environment variables for buildozer
         export ANDROID_HOME=~/.buildozer/android/platform/android-sdk
-        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.0
         
         # Create a minimal buildozer.spec if it doesn't exist
         if [ ! -f "buildozer.spec" ]; then
@@ -104,13 +109,21 @@ jobs:
         sed -i 's/# android.ndk = 25b/android.ndk = 25b/' buildozer.spec
         sed -i 's/# android.sdk = 33/android.sdk = 33/' buildozer.spec
         
+        # Set the Android SDK path explicitly in buildozer.spec
+        echo "android.sdk_path = ~/.buildozer/android/platform/android-sdk" >> buildozer.spec
+        
     - name: Build APK
       run: |
         # Set environment variables for buildozer
         export ANDROID_HOME=~/.buildozer/android/platform/android-sdk
-        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.0
         
         echo "Building Android APK..."
+        echo "ANDROID_HOME: $ANDROID_HOME"
+        echo "PATH: $PATH"
+        echo "Build tools location:"
+        ls -la ~/.buildozer/android/platform/android-sdk/build-tools/33.0.0/
+        
         buildozer android debug
         
     - name: Upload APK
