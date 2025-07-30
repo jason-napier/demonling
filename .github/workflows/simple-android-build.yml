@@ -1,0 +1,60 @@
+name: Simple Android Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - run: |
+        pip install -r requirements.txt
+        python test_ci.py
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build with Kivy Docker Image
+      run: |
+        echo "Building Android APK with Kivy Docker image..."
+        
+        # Use a pre-built Docker image with all Android tools
+        docker run --rm \
+          -v "${{ github.workspace }}:/home/user/hostcwd" \
+          -e PACKAGER=github-actions \
+          kivy/buildozer:latest buildozer android debug || {
+          echo "Docker build failed, trying alternative approach..."
+          
+          # Alternative: Use a different Docker image
+          docker run --rm \
+            -v "${{ github.workspace }}:/home/user/hostcwd" \
+            -e PACKAGER=github-actions \
+            --platform linux/amd64 \
+            kivy/buildozer:latest buildozer android debug
+        }
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: demonling-apk
+        path: |
+          bin/*.apk
+          .buildozer/android/platform/build-*/bin/*.apk
+        retention-days: 30
+        
+    - name: Build Summary
+      run: |
+        echo "Build completed!"
+        echo "APK files found:"
+        find . -name "*.apk" -type f || echo "No APK files found" 
