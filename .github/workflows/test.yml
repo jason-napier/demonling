@@ -1,8 +1,10 @@
-name: Test Workflow
+name: Test Application
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -10,11 +12,51 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Test Python
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
       run: |
-        echo "GitHub Actions are working!"
-        python --version
-        echo "Repository files:"
-        ls -la 
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Run installation test
+      run: |
+        python test_installation.py
+        
+    - name: Test Kivy imports
+      run: |
+        python -c "import kivy; print('✅ Kivy imported successfully')"
+        python -c "from kivy.app import App; print('✅ Kivy App imported')"
+        python -c "from kivy.uix.screenmanager import ScreenManager; print('✅ ScreenManager imported')"
+        
+    - name: Test app structure
+      run: |
+        python -c "from main import DemonlingApp, LandingScreen, GameScreen; print('✅ All app classes imported successfully')"
+        
+    - name: Check file structure
+      run: |
+        echo "📁 Project structure:"
+        ls -la
+        echo ""
+        echo "📄 Main files:"
+        ls -la *.py *.spec *.txt *.md 2>/dev/null || true
+        echo ""
+        echo "📁 Directories:"
+        ls -la */ 2>/dev/null || true
+        
+    - name: Validate buildozer.spec
+      run: |
+        echo "🔍 Checking buildozer.spec configuration..."
+        if [ -f "buildozer.spec" ]; then
+          echo "✅ buildozer.spec exists"
+          grep -E "^(title|package\.name|version)" buildozer.spec || echo "⚠️  Some required fields missing"
+        else
+          echo "❌ buildozer.spec not found"
+          exit 1
+        fi 

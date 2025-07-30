@@ -12,15 +12,43 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Build with Docker
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
       run: |
-        docker run --rm -v "${{ github.workspace }}:/home/user/hostcwd" kivy/buildozer:latest buildozer android debug
-        find .buildozer/android/platform/build-*/bin -name "*.apk" -exec cp {} . \;
-    
-    - name: Upload APK
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Test the app
+      run: |
+        python -c "import kivy; print('Kivy version:', kivy.__version__)"
+        python -c "from main import DemonlingApp; print('App imports successfully')"
+        
+    - name: Build Android APK
+      run: |
+        # Install buildozer
+        pip install buildozer
+        
+        # Build the APK
+        buildozer android debug
+        
+    - name: Find and upload APK
       uses: actions/upload-artifact@v4
       with:
         name: demonling-apk
-        path: "*.apk"
+        path: |
+          bin/*.apk
+          .buildozer/android/platform/build-*/bin/*.apk
+        retention-days: 30
+        
+    - name: Build summary
+      run: |
+        echo "Build completed!"
+        echo "APK files found:"
+        find . -name "*.apk" -type f
