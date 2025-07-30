@@ -1,11 +1,11 @@
-name: Build Android APK
+name: Build Android APK (DISABLED - Use working-android-build.yml instead)
 
-on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [ main, master ]
+#   pull_request:
+#     branches: [ main, master ]
+#   workflow_dispatch:
 
 jobs:
   build-android:
