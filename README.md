@@ -2,6 +2,8 @@
 
 A Python-based mobile game built with Kivy framework, featuring a turn-based RPG adventure.
 
+<!-- Trigger GitHub Actions build -->
+
 ## Features
 
 - **Landing Page**: Beautiful main menu with navigation to different game sections
