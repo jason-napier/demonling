@@ -16,7 +16,7 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json
 
 # (list) List of inclusions using pattern matching
-#source.include_patterns = assets/*,images/*.png
+source.include_patterns = assets/*,images/*.png
 
 # (list) Source files to exclude (let empty to not exclude anything)
 #source.exclude_exts = spec
@@ -100,22 +100,22 @@ android.sdk = 33
 android.ndk = 25b
 
 # (bool) Skip first time setup of the Android SDK
-android.skip_update = True
+#android.skip_update = False
 
 # (bool) Skip first time setup of the Android NDK
-android.skip_ndk_setup = True
+#android.skip_ndk_setup = False
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-android.ndk_path = /usr/local/lib/android/sdk/ndk/27.3.13750724
+#android.ndk_path =
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
-android.sdk_path = /usr/local/lib/android/sdk
+#android.sdk_path =
 
 # (str) Android SDK command line tools directory
-android.sdk_cmdline_tools = /usr/local/lib/android/sdk/cmdline-tools/latest
+#android.sdk_cmdline_tools =
 
 # (str) ANT directory (if empty, it will be automatically downloaded.)
 #android.ant_path =
