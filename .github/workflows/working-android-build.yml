@@ -1,4 +1,4 @@
-name: Simple Android Build
+name: Working Android Build
 
 on:
   push:
@@ -50,39 +50,31 @@ jobs:
       run: |
         pip install buildozer cython
         
-    - name: Create Compatible buildozer.spec
+    - name: Create Minimal buildozer.spec
       run: |
-        # Create a minimal buildozer.spec that works with current buildozer
-        cat > buildozer.spec << 'EOF'
-[app]
-title = Demonling
-package.name = demonling
-package.domain = org.demonling
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas,json
-version = 1.0.0
-requirements = python3,kivy,pillow
-orientation = portrait
-
-# Android specific
-fullscreen = 0
-android.presplash_color = #000000
-android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE,WAKE_LOCK
-android.api = 33
-android.minapi = 21
-android.sdk = 33
-android.ndk = 25b
-android.private_storage = True
-android.accept_sdk_license = True
-android.entrypoint = org.kivy.android.PythonActivity
-android.archs = arm64-v8a, armeabi-v7a
-
-# Let buildozer handle SDK/NDK installation
-# android.sdk_path = 
-# android.ndk_path = 
-EOF
+        # Create a minimal buildozer.spec that lets buildozer handle everything
+        echo "[app]" > buildozer.spec
+        echo "title = Demonling" >> buildozer.spec
+        echo "package.name = demonling" >> buildozer.spec
+        echo "package.domain = org.demonling" >> buildozer.spec
+        echo "source.dir = ." >> buildozer.spec
+        echo "source.include_exts = py,png,jpg,kv,atlas,json" >> buildozer.spec
+        echo "version = 1.0.0" >> buildozer.spec
+        echo "requirements = python3,kivy,pillow" >> buildozer.spec
+        echo "orientation = portrait" >> buildozer.spec
+        echo "fullscreen = 0" >> buildozer.spec
+        echo "android.presplash_color = #000000" >> buildozer.spec
+        echo "android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE,WAKE_LOCK" >> buildozer.spec
+        echo "android.api = 33" >> buildozer.spec
+        echo "android.minapi = 21" >> buildozer.spec
+        echo "android.sdk = 33" >> buildozer.spec
+        echo "android.ndk = 25b" >> buildozer.spec
+        echo "android.private_storage = True" >> buildozer.spec
+        echo "android.accept_sdk_license = True" >> buildozer.spec
+        echo "android.entrypoint = org.kivy.android.PythonActivity" >> buildozer.spec
+        echo "android.archs = arm64-v8a, armeabi-v7a" >> buildozer.spec
         
-        echo "Created compatible buildozer.spec:"
+        echo "Created minimal buildozer.spec:"
         cat buildozer.spec
         
     - name: Build APK

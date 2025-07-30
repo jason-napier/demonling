@@ -114,6 +114,9 @@ android.ndk_path = /usr/local/lib/android/sdk/ndk/27.3.13750724
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
 android.sdk_path = /usr/local/lib/android/sdk
 
+# (str) Android SDK command line tools directory
+android.sdk_cmdline_tools = /usr/local/lib/android/sdk/cmdline-tools/latest
+
 # (str) ANT directory (if empty, it will be automatically downloaded.)
 #android.ant_path =
 
