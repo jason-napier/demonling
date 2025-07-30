@@ -25,16 +25,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Test the app (headless)
-      env:
-        DISPLAY: :99
-        KIVY_GL_BACKEND: angle_sdl2
-        KIVY_WINDOW: sdl2
-        KIVY_NO_ARGS: '1'
-        KIVY_NO_CONFIG: '1'
+    - name: Test the app (CI)
       run: |
-        echo "Running headless tests before building..."
-        python test_headless.py
+        echo "Running CI tests before building..."
+        python test_ci.py
         
     - name: Build Android APK with Docker
       run: |
