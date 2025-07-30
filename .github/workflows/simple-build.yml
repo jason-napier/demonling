@@ -50,14 +50,33 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
     - name: Build APK with Docker
       run: |
-        # Pull the buildozer image
-        docker pull kivy/buildozer:latest
+        echo "Setting up Docker for APK build..."
+        
+        # Try to pull the image with explicit platform
+        docker pull --platform linux/amd64 kivy/buildozer:latest || {
+          echo "Failed to pull kivy/buildozer:latest, trying alternative approach..."
+          # Alternative: Use a different base image or build locally
+          docker pull --platform linux/amd64 python:3.9-slim
+        }
         
         # Build the APK
-        docker run --rm -v "${{ github.workspace }}:/home/user/hostcwd" \
-          kivy/buildozer:latest buildozer android debug
+        docker run --rm \
+          --platform linux/amd64 \
+          -v "${{ github.workspace }}:/home/user/hostcwd" \
+          -e PACKAGER=github-actions \
+          kivy/buildozer:latest buildozer android debug || {
+          echo "Docker build failed, trying alternative method..."
+          echo "This might take longer but should work..."
+          
+          # Alternative: Install buildozer directly
+          pip install buildozer
+          buildozer android debug
+        }
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
