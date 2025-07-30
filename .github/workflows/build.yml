@@ -5,6 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build-android:
@@ -46,11 +47,6 @@ jobs:
           libgstreamer1.0 \
           gstreamer1.0-plugins-{bad,base,good,ugly} \
           gstreamer1.0-{tools,x} \
-          libgirepository1.0-dev \
-          libcairo2-dev \
-          pkg-config \
-          libgstreamer1.0-dev \
-          libgstreamer-plugins-base1.0-dev \
           libgirepository1.0-dev \
           libcairo2-dev \
           pkg-config \
