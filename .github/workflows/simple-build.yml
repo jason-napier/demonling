@@ -26,6 +26,12 @@ jobs:
         pip install -r requirements.txt
         
     - name: Run headless tests
+      env:
+        DISPLAY: :99
+        KIVY_GL_BACKEND: angle_sdl2
+        KIVY_WINDOW: sdl2
+        KIVY_NO_ARGS: '1'
+        KIVY_NO_CONFIG: '1'
       run: |
         echo "Running headless tests..."
         python test_headless.py
