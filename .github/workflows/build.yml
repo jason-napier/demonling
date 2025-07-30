@@ -30,13 +30,12 @@ jobs:
         python -c "import kivy; print('Kivy version:', kivy.__version__)"
         python -c "from main import DemonlingApp; print('App imports successfully')"
         
-    - name: Build Android APK
+    - name: Build Android APK with Docker
       run: |
-        # Install buildozer
-        pip install buildozer
-        
-        # Build the APK
-        buildozer android debug
+        # Use the official Kivy buildozer Docker image
+        docker run --rm -v "${{ github.workspace }}:/home/user/hostcwd" \
+          -e PACKAGER=github-actions \
+          kivy/buildozer:latest buildozer android debug
         
     - name: Find and upload APK
       uses: actions/upload-artifact@v4
@@ -51,4 +50,4 @@ jobs:
       run: |
         echo "Build completed!"
         echo "APK files found:"
-        find . -name "*.apk" -type f
+        find . -name "*.apk" -type f || echo "No APK files found"
