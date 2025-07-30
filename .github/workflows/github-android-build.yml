@@ -50,20 +50,38 @@ jobs:
       run: |
         pip install buildozer cython
         
-    - name: Configure Buildozer for GitHub Actions
+    - name: Verify Android SDK
       run: |
-        # Use the existing Android SDK in GitHub Actions
-        export ANDROID_HOME=/usr/local/lib/android/sdk
-        export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
-        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.0
+        echo "Verifying Android SDK installation..."
+        echo "ANDROID_HOME: $ANDROID_HOME"
+        echo "ANDROID_SDK_ROOT: $ANDROID_SDK_ROOT"
         
-        # Update buildozer.spec to use the existing Android SDK
-        sed -i 's/# android.sdk_path =/android.sdk_path = \/usr\/local\/lib\/android\/sdk/' buildozer.spec
-        sed -i 's/# android.ndk_path =/android.ndk_path = \/usr\/local\/lib\/android\/sdk\/ndk\/27.3.13750724/' buildozer.spec
+        # Check if Android SDK exists
+        if [ -d "/usr/local/lib/android/sdk" ]; then
+          echo "✅ Android SDK found at /usr/local/lib/android/sdk"
+          ls -la /usr/local/lib/android/sdk/
+        else
+          echo "❌ Android SDK not found at /usr/local/lib/android/sdk"
+          exit 1
+        fi
         
-        echo "Using existing Android SDK at: $ANDROID_HOME"
-        echo "Available build tools:"
-        ls -la $ANDROID_HOME/build-tools/
+        # Check build tools
+        if [ -d "/usr/local/lib/android/sdk/build-tools" ]; then
+          echo "✅ Build tools found"
+          ls -la /usr/local/lib/android/sdk/build-tools/
+        else
+          echo "❌ Build tools not found"
+          exit 1
+        fi
+        
+        # Check NDK
+        if [ -d "/usr/local/lib/android/sdk/ndk" ]; then
+          echo "✅ NDK found"
+          ls -la /usr/local/lib/android/sdk/ndk/
+        else
+          echo "❌ NDK not found"
+          exit 1
+        fi
         
     - name: Build APK
       run: |
@@ -73,9 +91,9 @@ jobs:
         export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.0
         
         echo "Building Android APK..."
-        echo "ANDROID_HOME: $ANDROID_HOME"
-        echo "Available build tools:"
-        ls -la $ANDROID_HOME/build-tools/
+        echo "Using Android SDK at: $ANDROID_HOME"
+        echo "Buildozer configuration:"
+        cat buildozer.spec | grep -E "(android\.sdk_path|android\.ndk_path|android\.api|android\.minapi)"
         
         buildozer android debug
         
