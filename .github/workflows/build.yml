@@ -16,11 +16,11 @@ jobs:
     
     - name: Build with Docker
       run: |
-        docker run --rm -v ${{ github.workspace }}:/home/user/hostcwd kivy/buildozer:latest buildozer android debug
-        cp -r .buildozer/android/platform/build-*/bin/*.apk ./
+        docker run --rm -v "${{ github.workspace }}:/home/user/hostcwd" kivy/buildozer:latest buildozer android debug
+        find .buildozer/android/platform/build-*/bin -name "*.apk" -exec cp {} . \;
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: demonling-apk
-        path: *.apk
+        path: "*.apk"
