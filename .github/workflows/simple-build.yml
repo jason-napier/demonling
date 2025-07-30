@@ -25,16 +25,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Test app imports
+    - name: Run headless tests
       run: |
-        echo "Testing app imports..."
-        python -c "import kivy; print('✅ Kivy imported')"
-        python -c "from main import DemonlingApp; print('✅ App imported')"
-        
-    - name: Test app structure
-      run: |
-        echo "Testing app structure..."
-        python -c "from main import LandingScreen, GameScreen, LoadScreen, SettingsScreen, CreditsScreen; print('✅ All screens imported')"
+        echo "Running headless tests..."
+        python test_headless.py
         
     - name: Check buildozer.spec
       run: |

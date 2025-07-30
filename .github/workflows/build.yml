@@ -25,10 +25,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: Test the app
+    - name: Test the app (headless)
       run: |
-        python -c "import kivy; print('Kivy version:', kivy.__version__)"
-        python -c "from main import DemonlingApp; print('App imports successfully')"
+        echo "Running headless tests before building..."
+        python test_headless.py
         
     - name: Build Android APK with Docker
       run: |
