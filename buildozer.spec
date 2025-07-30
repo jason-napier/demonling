@@ -99,6 +99,12 @@ android.sdk = 33
 # (str) Android NDK version to use
 android.ndk = 25b
 
+# (bool) Skip first time setup of the Android SDK
+android.skip_update = True
+
+# (bool) Skip first time setup of the Android NDK
+android.skip_ndk_setup = True
+
 # (bool) Use --private data storage (True) or --dir public storage (False)
 android.private_storage = True
 
