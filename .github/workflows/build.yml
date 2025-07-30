@@ -52,10 +52,7 @@ jobs:
           libffi-dev \
           libssl-dev \
           cmake \
-          ninja-build \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libtinfo5
+          ninja-build
     
     - name: Install Python dependencies
       run: |
